@@ -15,8 +15,10 @@ ofstream fout;
 ifstream fin;
 char cl;
 
-// prototype for function to check whether roll number exists in database or not
-int roll_check (int);
+string cand_names[] = CAND_NAMES;	// Store the names in a string array
+
+// prototype for function to check whether the student has voted already.
+int check_roll (int);
 
 class count
 {
@@ -47,8 +49,6 @@ c_update (int v)
   ++v_cnt.cnt;
   return 1;
 }
-
-int check_roll (int);
 
 class stud
 {
@@ -98,7 +98,8 @@ public:
 	else
 	  {
 	    cout <<
-	      "\nYou have already voted......don't ever try to fuck a machine you silly";
+	      "\nYou have already voted...You're not alowed to vote more than once"
+	      << endl;
 	    getch ();
 	    r = 0;
 	  }
@@ -127,7 +128,8 @@ check_roll (int rno)
 	}
     }
   fin.close ();
-return 1}
+  return 1;
+}
 
 int write_data (void);
 
@@ -155,18 +157,20 @@ write_data ()
   fout.write ((char *) &st, sizeof (st));
   fout.close ();
   fout.open ("data_.txt", ios::app);
-  fout << st.roll_no << "\t" << st.ch << endl;
+  fout << st.roll_no << "\t" << cand_names[st.ch - 1] << endl;
   fout.close ();
   fout.open ("cnt", ios::app);
   fout.write ((char *) &v_cnt, sizeof (v_cnt));
   fout.close ();
   fout.open ("cnt_.txt", ios::app);
-  fout << "res[1]	" << v_cnt.res[0] << "	res[2]	" << v_cnt.
-    res[1] << "	res[3]	" << v_cnt.res[2] << "	res[4]	" << v_cnt.
-    res[3] << endl;
+  for (int i = 0; i < MAX_CAND; ++i)
+    {
+      fout << cand_names[i] << ": " << v_cnt.res[i] << "  ";
+    }
+  fout << endl;
   fout.close ();
-  cout << "\nThankyou " << st.
-    name << "Your vote has been registered successfully";
+  cout << "\nThankyou " << st.name <<
+    "Your vote has been registered successfully";
   r = 1;
   return r;
 }
@@ -179,8 +183,8 @@ start_vote ()
   while (1)
     {
       opmenu ();
-      cout << "\n\nTotal " << v_cnt.
-	cnt << "  no. of votes have been registered" << endl;
+      cout << "\n\nTotal " << v_cnt.cnt <<
+	"  no. of votes have been registered" << endl;
       if (v_cnt.cnt > MAX_VOTE)
 	{
 	  cout << "\nMAXIMUM no of votes have been registered....." << endl;
@@ -212,7 +216,6 @@ main ()
   system ("clear");
   cout <<
     "\n\n								$$$$$	RESULTS  $$$$$\n\n\n\n\n";
-  string cand_names[] = CAND_NAMES;
   graph (cand_names, v_cnt.res, MAX_CAND);
   getch ();
   return 1;
