@@ -1,6 +1,6 @@
 #ifndef GRAPH
 #define GRAPH
 
-void graph(std::string[] ,int[] , int);
+void graph (std::string[], int[], int);
 
 #endif
